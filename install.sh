@@ -25,9 +25,8 @@ done
 wget https://packages.microsoft.com/config/ubuntu/$DISTRIB_RELEASE/packages-microsoft-prod.deb
 dpkg -i packages-microsoft-prod.deb
 apt-get update
-apt-get install -y pure-ftpd libfuse3-dev fuse3 lighttpd
-apt-get update
-apt-get install -y blobfuse2
+apt-get install -y pure-ftpd-common libfuse3-dev fuse3 lighttpd blobfuse2
+apt-get upgrade -y
 mkdir /ftp/
 mkdir /ftp/ftp-files
 
@@ -54,7 +53,7 @@ echo "azstorage:
   account-name: $ACCOUNT
   container: $CONTAINER
   mode: key
-  account-key: $KEY" > /ftp/ftp.cfg
+  account-key: $KEY" > /ftp/storage.yml
 
 echo "#!/bin/sh -e
 if [ ! -d  /mnt/blobfusetmp ]; then
@@ -65,9 +64,9 @@ if [ ! -d /mnt/blobfusemnt ]; then
 fi
 
 # blobfuse /ftp/ftp-files --tmp-path=/mnt/blobfusetmp -o uid=$FTPUID -o gid=$FTPGID -o attr_timeout=240 -o entry_timeout=240 -o negative_timeout=120 --config-file=/ftp/ftp.cfg -o allow_other --log-level=LOG_DEBUG --file-cache-timeout-in-seconds=120
-blobfuse2 mount /mnt/blobfusemnt/ --config-file=/ftp/ftp.yml --tmp-path=/mnt/blobfusetmp/
-/usr/sbin/pure-ftpd /etc/pure-ftpd/pure-ftpd.conf" > /etc/rc.local
-chmod +x /etc/rc.local
+blobfuse2 mount /mnt/blobfusemnt/ --config-file=/ftp/storage.yml --tmp-path=/mnt/blobfusetmp/"
+# /usr/sbin/pure-ftpd /etc/pure-ftpd/pure-ftpd.conf" > /etc/rc.local
+# chmod +x /etc/rc.local
 
 #Generate a self-signed certificate for the web server
 mv /etc/lighttpd/ssl/ /etc/lighttpd/ssl.$$/
@@ -78,6 +77,7 @@ chmod 744 /etc/lighttpd/ssl/server.pem
 
 touch /var/log/lighttpd/error.log
 chown ftpuser:ftpusers /var/log/lighttpd/error.log
+chown -r ftpuser:ftpusers /var/cache/lighttpd/
 
 #Configure the web server with the lighttpd.conf from GitHub
 mv /etc/lighttpd/lighttpd.conf /etc/lighttpd/lighttpd.conf.$$
@@ -103,7 +103,7 @@ chmod +r /etc/lighttpd/.lighttpdpassword
 
 touch /ftp/ftp.passwd
 
-sh /etc/rc.local
+# sh /etc/rc.local
 
 systemctl restart lighttpd
 
