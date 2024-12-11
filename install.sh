@@ -25,7 +25,9 @@ done
 wget https://packages.microsoft.com/config/ubuntu/$DISTRIB_RELEASE/packages-microsoft-prod.deb
 dpkg -i packages-microsoft-prod.deb
 apt-get update
-apt-get install -y pure-ftpd blobfuse lighttpd
+apt-get install -y pure-ftpd libfuse3-dev fuse3 lighttpd
+apt-get update
+apt-get install -y blobfuse2
 mkdir /ftp/
 mkdir /ftp/ftp-files
 
@@ -51,7 +53,8 @@ if [ ! -d  /mnt/blobfusetmp ]; then
   mkdir /mnt/blobfusetmp
 fi
 
-blobfuse /ftp/ftp-files --tmp-path=/mnt/blobfusetmp -o uid=$FTPUID -o gid=$FTPGID -o attr_timeout=240 -o entry_timeout=240 -o negative_timeout=120 --config-file=/ftp/ftp.cfg -o allow_other --log-level=LOG_DEBUG --file-cache-timeout-in-seconds=120
+# blobfuse /ftp/ftp-files --tmp-path=/mnt/blobfusetmp -o uid=$FTPUID -o gid=$FTPGID -o attr_timeout=240 -o entry_timeout=240 -o negative_timeout=120 --config-file=/ftp/ftp.cfg -o allow_other --log-level=LOG_DEBUG --file-cache-timeout-in-seconds=120
+blobfuse2 mount /mnt/blobfusetmp 
 /usr/sbin/pure-ftpd /etc/pure-ftpd/pure-ftpd.conf" > /etc/rc.local
 chmod +x /etc/rc.local
 
