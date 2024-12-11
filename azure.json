@@ -201,7 +201,7 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "fileUris": "[split('https://raw.githubusercontent.com/cederos/azure-blog-storage-ftp-server/refs/heads/master/install.sh', ' ')]",
-          "commandToExecute": "[concat('bash install.sh --account=', parameters('StorageAccountName'), ' --key=', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('StorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value, ' --container=' , parameters('FtpFileContainerName'), ' --adminpassword=' , parameters('password'))]"
+          "commandToExecute": "[concat('sudo bash install.sh --account=', parameters('StorageAccountName'), ' --key=', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('StorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value, ' --container=' , parameters('FtpFileContainerName'), ' --adminpassword=' , parameters('password'))]"
         }
       }
     }

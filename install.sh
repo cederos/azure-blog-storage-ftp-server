@@ -20,10 +20,12 @@ do
 	esac
 done
 
-# wget https://packages.microsoft.com/config/ubuntu/{echo $DISTRIB_RELEASE}/packages-microsoft-prod.deb
-# dpkg -i packages-microsoft-prod.deb
-sudo apt-get update
-sudo apt-get install -y pure-ftpd blobfuse lighttpd
+. /etc/lsb-release
+
+wget https://packages.microsoft.com/config/ubuntu/{echo $DISTRIB_RELEASE}/packages-microsoft-prod.deb
+dpkg -i packages-microsoft-prod.deb
+apt-get update
+apt-get install -y pure-ftpd blobfuse lighttpd
 mkdir /ftp/
 mkdir /ftp/ftp-files
 
