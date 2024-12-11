@@ -44,17 +44,28 @@ FTPUID=$(id -u ftpuser)
 openssl dhparam -out /etc/ssl/private/pure-ftpd-dhparams.pem 3072
 openssl req -x509 -nodes -newkey rsa:2048 -keyout /ftp/ftp.pem -out /ftp/ftp.pem -days 3650 -subj "/C=US/ST=NY/L=NY/O=NY/OU=NY/CN=NY emailAddress=email@example.com"
 
-echo "accountName $ACCOUNT
-accountKey $KEY
-containerName $CONTAINER" > /ftp/ftp.cfg
+# echo "accountName $ACCOUNT
+# accountKey $KEY
+# containerName $CONTAINER" > /ftp/ftp.cfg
+
+echo "azstorage:
+# Required
+  type: block
+  account-name: $ACCOUNT
+  container: $CONTAINER
+  mode: key
+  account-key: $KEY" > /ftp/ftp.cfg
 
 echo "#!/bin/sh -e
 if [ ! -d  /mnt/blobfusetmp ]; then
   mkdir /mnt/blobfusetmp
 fi
+if [ ! -d /mnt/blobfusemnt ]; then
+  mkdir /mnt/blobfusemnt
+fi
 
 # blobfuse /ftp/ftp-files --tmp-path=/mnt/blobfusetmp -o uid=$FTPUID -o gid=$FTPGID -o attr_timeout=240 -o entry_timeout=240 -o negative_timeout=120 --config-file=/ftp/ftp.cfg -o allow_other --log-level=LOG_DEBUG --file-cache-timeout-in-seconds=120
-blobfuse2 mount /mnt/blobfusetmp 
+blobfuse2 mount /mnt/blobfusemnt/ --config-file=/ftp/ftp.yml --tmp-path=/mnt/blobfusetmp/
 /usr/sbin/pure-ftpd /etc/pure-ftpd/pure-ftpd.conf" > /etc/rc.local
 chmod +x /etc/rc.local
 
@@ -82,7 +93,7 @@ find /ftp -type d -exec chmod 2750 {} \+
 find /ftp -type f -exec chmod 640 {} \+
 
 rm /var/www/html/*
-wget -O /var/www/html/index.sh https://raw.githubusercontent.com/theonemule/azure-blog-storage-ftp-server/master/index.sh
+wget -O /var/www/html/index.sh https://raw.githubusercontent.com/cederos/azure-blog-storage-ftp-server/refs/heads/master/index.sh
 chown -R ftpuser:ftpusers /var/www/html/
 find /var/www/html/ -type d -exec chmod 2750 {} \+
 find /var/www/html/ -type f -exec chmod 640 {} \+

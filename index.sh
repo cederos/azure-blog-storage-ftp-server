@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#The admin interface for OpenVPN
-
 echo "Content-type: text/html"
 echo ""
 echo "<!DOCTYPE html>
