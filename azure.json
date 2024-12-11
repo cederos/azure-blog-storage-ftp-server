@@ -49,8 +49,8 @@
   "variables": {
     "scenarioPrefix": "blobstorageftp",
     "imagePublisher": "Canonical",
-    "imageOffer": "UbuntuServer",
-    "ubuntuOSVersion": "ubuntu-24_04-lts",
+    "imageOffer": "ubuntu-24_04-lts",
+    "ubuntuOSVersion": "server",
     "nicName": "[concat(variables('scenarioPrefix'),'Nic')]",
     "vnetAddressPrefix": "10.0.0.0/16",
     "subnetName": "[concat(variables('scenarioPrefix'),'Subnet')]",
